@@ -17,54 +17,54 @@ std::ostream& print_vector(const std::vector<const char*>& input, std::ostream& 
 } 
 
 int find_max_calories(const std::vector<const char*>& inputs) {
-    std::unordered_map<int, int> scores = {
-        {0, 0}
-    };
-   
-    for (int i = 0, j = 0; i< inputs.size(); ++i) {
+    int max_sum = 0, acc = 0;
+    for (int i = 0; i< inputs.size(); ++i) {
         if (!strcmp(inputs[i], "")) {
-            j++;
-            scores[j] = 0;
+            max_sum =  std::max(max_sum, acc);
+            acc = 0;
         } else {
-            scores[j] += atoi(inputs[i]);
+            acc+=atoi(inputs[i]);
         }
     }
-    int max = 0;
-    for (const auto score: scores) {
-        max = std::max(max, score.second);
-    }
-
-    return max;
+   
+    return max_sum;
 }
 
 int find_top_tree_calories(const std::vector<const char*>& inputs) {
-    std::unordered_map<int, int> scores = {
-        {0, 0}
-    };
-   
-    for (int i = 0, j = 0; i< inputs.size(); ++i) {
-        if (!strcmp(inputs[i], "")) {
-            j++;
-            scores[j] = 0;
-        } else {
-            scores[j] += atoi(inputs[i]);
-        }
-    }
+    int max_sum1 = 0, max_sum2= 0, max_sum3 = 0, acc = 0, tmp;
 
-    int max = 0, max_key = 0, sum = 0;
-    for (int i = 0; i < 3; ++i) {
-        for (const auto score: scores) {
-            if (max <= score.second) {
-                max = score.second;
-                max_key = score.first;
+    for (const char* input: inputs) {
+        if (!strcmp(input, "")) {
+            if (acc > max_sum1) {
+                tmp = max_sum2;
+                max_sum2 = max_sum1;
+                max_sum3 = tmp; 
+                max_sum1 = acc;
+            } else if (acc < max_sum1 && acc > max_sum2) {
+                max_sum3 = max_sum2;
+                max_sum2 = acc;
+            } else if (acc < max_sum2 && acc > max_sum3) {
+                max_sum3 = acc;
             }
+            acc = 0;
+        } else {
+            acc+=atoi(input);
         }
-        scores.erase(max_key);
-        sum += max;
-        max = 0;
     }
 
-    return sum;
+    if (acc > max_sum1) {
+        tmp = max_sum2;
+        max_sum2 = max_sum1;
+        max_sum3 = tmp; 
+        max_sum1 = acc;
+    } else if (acc < max_sum1 && acc > max_sum2) {
+        max_sum3 = max_sum2;
+        max_sum2 = acc;
+    } else if (acc < max_sum2 && acc > max_sum3) {
+        max_sum3 = acc;
+    }
+
+    return max_sum1 + max_sum2 +  max_sum3;
 
 }
 
